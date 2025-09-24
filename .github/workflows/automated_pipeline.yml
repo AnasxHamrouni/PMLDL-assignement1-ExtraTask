@@ -35,11 +35,9 @@ jobs:
           pip install -r requirements.txt
           pip install "dvc[gs]" || pip install dvc
 
-      - name: (Optional) DVC pull (if using remote storage)
+      - name: DVC pull (to be configured in future with remote dvc)
         run: |
-          # If you configured a DVC remote, uncomment the next line
-          # dvc pull
-          echo "Skipping dvc pull by default."
+          echo "Skipping dvc pull ."
 
       - name: Run pipeline via DVC
         run: |
@@ -50,9 +48,12 @@ jobs:
           ls -la models || true
           ls -la data/processed || true
 
-      - name: Deploy (docker-compose) in runner (optional)
+      - name: Install Docker and Docker Compose
         run: |
-          # Docker in GitHub runners may require additional privileges.
-          # If your action runner can run docker-compose, uncomment next lines:
-          # docker-compose -f code/deployment/docker-compose.yml up -d --build
-          echo "Deployment step skipped by default in Actions."
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Deploy (docker-compose)
+        run: |
+          docker-compose -f code/deployment/docker-compose.yml up -d --build
+          echo "Deploying!"
