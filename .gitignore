@@ -1,0 +1,10 @@
+__pycache__/
+.env
+services
+
+.dvc/cache/
+.dvc/tmp/
+.dvc/config.local
+
+mlruns/
+mlflow.db
