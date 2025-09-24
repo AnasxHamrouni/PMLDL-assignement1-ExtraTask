@@ -39,6 +39,11 @@ jobs:
         run: |
           echo "Skipping dvc pull ."
 
+      - name: Install Docker and Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
       - name: Run pipeline via DVC
         run: |
           dvc repro --force
@@ -47,11 +52,6 @@ jobs:
         run: |
           ls -la models || true
           ls -la data/processed || true
-
-      - name: Install Docker and Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
 
       - name: Deploy (docker-compose)
         run: |
