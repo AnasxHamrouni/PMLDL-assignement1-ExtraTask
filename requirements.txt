@@ -9,7 +9,6 @@ uvicorn[standard]
 streamlit
 python-multipart
 requests
-apache-airflow==2.7.1
 psutil
 python-dateutil
 joblib
