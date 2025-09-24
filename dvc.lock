@@ -1,0 +1,73 @@
+schema: '2.0'
+stages:
+  data:
+    cmd: python code/datasets/prepare_data.py
+    deps:
+    - path: code/datasets/prepare_data.py
+      hash: md5
+      md5: 5f49c80824069eecedb1740ec497686a
+      size: 13195
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 3d43027f04d02b47af250a75292d3c18
+      size: 674209
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 14a3995840475d0ae83be97ffd88931d
+      size: 68842515
+  train:
+    cmd: python code/models/train.py --processed-dir data/processed --models-dir
+      models
+    deps:
+    - path: code/models/train.py
+      hash: md5
+      md5: ee90c283cdec9455a89f10868193993b
+      size: 17261
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 3d43027f04d02b47af250a75292d3c18
+      size: 674209
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 14a3995840475d0ae83be97ffd88931d
+      size: 68842515
+    - path: params.yaml
+      hash: md5
+      md5: f2adc86b19c1aa0cd0e1f50ec3b54b99
+      size: 324
+    params:
+      params.yaml:
+        train:
+          n_splits: 3
+          exclude_leaky_features: true
+          use_smote: true
+          calibrate_probabilities: true
+          n_estimators_cv: 100
+          n_estimators_final: 150
+          max_depth: 6
+          learning_rate: 0.1
+          subsample: 0.8
+          colsample_bytree: 0.8
+          mlflow_uri: file:./mlruns
+          mlflow_experiment: automated_pipeline_experiment
+    outs:
+    - path: models/metrics.json
+      hash: md5
+      md5: 3bafe503133e48aa79908bcaee96a752
+      size: 792
+    - path: models/model.pkl
+      hash: md5
+      md5: 2123319449229ecea82a908d9d242790
+      size: 428672
+  deploy:
+    cmd: docker-compose -f code/deployment/docker-compose.yml up -d --build
+    deps:
+    - path: code/deployment/docker-compose.yml
+      hash: md5
+      md5: 67d66753fd03755927469beadc610976
+      size: 700
+    - path: models/model.pkl
+      hash: md5
+      md5: 2123319449229ecea82a908d9d242790
+      size: 428672
